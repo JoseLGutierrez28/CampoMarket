@@ -407,19 +407,19 @@ class UIController {
                 document.getElementById('mobile-dashboard-link').classList.remove('hidden');
             }
 
-            // Add cart link for consumers
-            if (!document.querySelector('.nav-link[data-page="cart"]')) {
-                const nav = document.querySelector('.desktop-nav ul');
-                const cartItem = document.createElement('li');
-                cartItem.innerHTML = '<a href="#" class="nav-link" data-page="cart">Carrito</a>';
-                nav.appendChild(cartItem);
+            // // Add cart link for consumers
+            // if (!document.querySelector('.nav-link[data-page="cart"]')) {
+            //     const nav = document.querySelector('.desktop-nav ul');
+            //     const cartItem = document.createElement('li');
+            //     cartItem.innerHTML = '<a href="#" class="nav-link" data-page="cart">Carrito</a>';
+            //     nav.appendChild(cartItem);
 
-                // Re-bind events for new link
-                cartItem.querySelector('.nav-link').addEventListener('click', (e) => {
-                    e.preventDefault();
-                    this.showPage('cart');
-                });
-            }
+            //     // Re-bind events for new link
+            //     cartItem.querySelector('.nav-link').addEventListener('click', (e) => {
+            //         e.preventDefault();
+            //         this.showPage('cart');
+            //     });
+            // }
 
             // Add to mobile menu
             document.getElementById('mobile-cart-link').classList.remove('hidden');
