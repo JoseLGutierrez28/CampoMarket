@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CampoMarket</title>
-<link rel="shortcut icon" href="./img/ico.webp" type="image/x-icon">
+    <link rel="shortcut icon" href="./img/ico.webp" type="image/x-icon">
     <link rel="stylesheet" href="./css/style.css">
 </head>
 
@@ -16,7 +16,9 @@
             <div class="logo">
                 <i>🌱</i> CampoMarket
             </div>
-            <nav>
+
+            <!-- Menú de navegación para desktop -->
+            <nav class="desktop-nav">
                 <ul>
                     <li><a href="#" class="nav-link" data-page="home">Inicio</a></li>
                     <li><a href="#" class="nav-link" data-page="products">Productos</a></li>
@@ -24,6 +26,8 @@
                     <li><a href="#" class="nav-link" data-page="contact">Contacto</a></li>
                 </ul>
             </nav>
+
+            <!-- Acciones de usuario para desktop -->
             <div class="user-actions">
                 <button class="btn btn-outline" id="login-btn">Iniciar Sesión</button>
                 <button class="btn btn-primary" id="register-btn">Registrarse</button>
@@ -32,8 +36,45 @@
                     <button class="btn btn-outline" id="logout-btn">Cerrar Sesión</button>
                 </div>
             </div>
+
+            <!-- Botón de menú hamburguesa para móviles -->
+            <button class="menu-toggle" id="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </header>
+
+    <!-- Menú móvil -->
+    <div class="mobile-nav" id="mobile-nav">
+        <div class="mobile-nav-header">
+            <div class="mobile-nav-logo">🌱 CampoMarket</div>
+            <button class="close-menu" id="close-menu">✕</button>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#" class="nav-link" data-page="home">Inicio</a></li>
+                <li><a href="#" class="nav-link" data-page="products">Productos</a></li>
+                <li><a href="#" class="nav-link" data-page="about">Sobre Nosotros</a></li>
+                <li><a href="#" class="nav-link" data-page="contact">Contacto</a></li>
+                <li id="mobile-dashboard-link" class="hidden"><a href="#" class="nav-link" data-page="dashboard">Mi
+                        Panel</a></li>
+                <li id="mobile-cart-link" class="hidden"><a href="#" class="nav-link" data-page="cart">Carrito</a></li>
+            </ul>
+        </nav>
+        <div class="user-actions">
+            <button class="btn btn-outline" id="mobile-login-btn">Iniciar Sesión</button>
+            <button class="btn btn-primary" id="mobile-register-btn">Registrarse</button>
+            <div id="mobile-user-menu" class="hidden">
+                <span id="mobile-user-name"></span>
+                <button class="btn btn-outline" id="mobile-logout-btn">Cerrar Sesión</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay para el menú móvil -->
+    <div class="overlay" id="overlay"></div>
 
     <!-- Notification -->
     <div class="notification" id="notification"></div>

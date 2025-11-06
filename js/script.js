@@ -1,4 +1,3 @@
-// Data Storage (using localStorage as a temporary database)
 class DataStore {
     constructor() {
         this.users = JSON.parse(localStorage.getItem('campomarket_users')) || [];
@@ -222,6 +221,7 @@ class UIController {
                 e.preventDefault();
                 const page = e.target.getAttribute('data-page');
                 this.showPage(page);
+                this.closeMobileMenu();
             });
         });
 
@@ -235,6 +235,21 @@ class UIController {
         });
 
         document.getElementById('logout-btn').addEventListener('click', () => {
+            this.logout();
+        });
+
+        // Mobile auth buttons
+        document.getElementById('mobile-login-btn').addEventListener('click', () => {
+            this.showPage('login');
+            this.closeMobileMenu();
+        });
+
+        document.getElementById('mobile-register-btn').addEventListener('click', () => {
+            this.showPage('register');
+            this.closeMobileMenu();
+        });
+
+        document.getElementById('mobile-logout-btn').addEventListener('click', () => {
             this.logout();
         });
 
@@ -296,6 +311,19 @@ class UIController {
         document.getElementById('checkout-btn').addEventListener('click', () => {
             this.checkout();
         });
+
+        // Mobile menu
+        document.getElementById('menu-toggle').addEventListener('click', () => {
+            this.openMobileMenu();
+        });
+
+        document.getElementById('close-menu').addEventListener('click', () => {
+            this.closeMobileMenu();
+        });
+
+        document.getElementById('overlay').addEventListener('click', () => {
+            this.closeMobileMenu();
+        });
     }
 
     showPage(pageName) {
@@ -345,7 +373,9 @@ class UIController {
     updateUI() {
         const user = this.dataStore.currentUser;
         const userMenu = document.getElementById('user-menu');
+        const mobileUserMenu = document.getElementById('mobile-user-menu');
         const authButtons = document.getElementById('login-btn').parentElement;
+        const mobileAuthButtons = document.getElementById('mobile-login-btn').parentElement;
 
         if (user) {
             // User is logged in
@@ -353,11 +383,15 @@ class UIController {
             userMenu.classList.remove('hidden');
             document.getElementById('user-name').textContent = user.name;
 
+            mobileAuthButtons.classList.add('hidden');
+            mobileUserMenu.classList.remove('hidden');
+            document.getElementById('mobile-user-name').textContent = user.name;
+
             // Update navigation based on user type
             if (user.type === 'producer') {
                 // Add dashboard link for producers
                 if (!document.querySelector('.nav-link[data-page="dashboard"]')) {
-                    const nav = document.querySelector('nav ul');
+                    const nav = document.querySelector('.desktop-nav ul');
                     const dashboardItem = document.createElement('li');
                     dashboardItem.innerHTML = '<a href="#" class="nav-link" data-page="dashboard">Mi Panel</a>';
                     nav.appendChild(dashboardItem);
@@ -368,11 +402,14 @@ class UIController {
                         this.showPage('dashboard');
                     });
                 }
+
+                // Add to mobile menu
+                document.getElementById('mobile-dashboard-link').classList.remove('hidden');
             }
 
             // Add cart link for consumers
             if (!document.querySelector('.nav-link[data-page="cart"]')) {
-                const nav = document.querySelector('nav ul');
+                const nav = document.querySelector('.desktop-nav ul');
                 const cartItem = document.createElement('li');
                 cartItem.innerHTML = '<a href="#" class="nav-link" data-page="cart">Carrito</a>';
                 nav.appendChild(cartItem);
@@ -383,17 +420,39 @@ class UIController {
                     this.showPage('cart');
                 });
             }
+
+            // Add to mobile menu
+            document.getElementById('mobile-cart-link').classList.remove('hidden');
         } else {
             // User is not logged in
             authButtons.classList.remove('hidden');
             userMenu.classList.add('hidden');
+
+            mobileAuthButtons.classList.remove('hidden');
+            mobileUserMenu.classList.add('hidden');
 
             // Remove dashboard and cart links if present
             const dashboardLink = document.querySelector('.nav-link[data-page="dashboard"]');
             const cartLink = document.querySelector('.nav-link[data-page="cart"]');
             if (dashboardLink) dashboardLink.parentElement.remove();
             if (cartLink) cartLink.parentElement.remove();
+
+            // Hide from mobile menu
+            document.getElementById('mobile-dashboard-link').classList.add('hidden');
+            document.getElementById('mobile-cart-link').classList.add('hidden');
         }
+    }
+
+    openMobileMenu() {
+        document.getElementById('mobile-nav').classList.add('active');
+        document.getElementById('overlay').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    closeMobileMenu() {
+        document.getElementById('mobile-nav').classList.remove('active');
+        document.getElementById('overlay').classList.remove('active');
+        document.body.style.overflow = 'auto';
     }
 
     login() {
@@ -408,6 +467,7 @@ class UIController {
             this.showNotification('Inicio de sesión exitoso', 'success');
             this.showPage('home');
             this.updateUI();
+            this.closeMobileMenu();
         } else {
             this.showNotification('Email o contraseña incorrectos', 'error');
         }
@@ -438,6 +498,7 @@ class UIController {
         this.showNotification('Registro exitoso', 'success');
         this.showPage('home');
         this.updateUI();
+        this.closeMobileMenu();
     }
 
     logout() {
@@ -446,6 +507,7 @@ class UIController {
         this.showNotification('Sesión cerrada', 'success');
         this.showPage('home');
         this.updateUI();
+        this.closeMobileMenu();
     }
 
     loadFeaturedProducts() {
