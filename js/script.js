@@ -1,3 +1,7 @@
+// Ensure a global uiController object exists for inline onclick handlers in the HTML.
+// This prevents "uiController is not defined" if an inline handler fires before the instance is assigned.
+window.uiController = window.uiController || {};
+
 class DataStore {
     constructor() {
         this.users = JSON.parse(localStorage.getItem('campomarket_users')) || [];
