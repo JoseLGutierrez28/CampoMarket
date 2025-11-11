@@ -25,7 +25,8 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        #mobile-auth-buttons, #mobile-user-menu {
+        #mobile-auth-buttons,
+        #mobile-user-menu {
             display: flex;
             padding-top: 40px;
             justify-content: center;
@@ -35,6 +36,12 @@
             background-color: var(--background);
             color: var(--text);
             line-height: 1.6;
+        }
+
+        .btn-more-products {
+            display: flex;
+            justify-content: center;
+            padding-bottom: 3rem;
         }
 
         .icons {
@@ -620,7 +627,7 @@
                 margin-top: 1rem;
             }
 
-            .btn{
+            .btn {
                 font-weight: 400;
             }
         }
@@ -767,6 +774,12 @@
                 <h2 class="section-title">Productos Destacados</h2>
                 <div class="products-grid" id="featured-products">
                     <!-- Featured products will be loaded here -->
+
+                </div>
+
+                <div class="btn-more-products">
+                    <button type="button" class="btn btn-primary nav-link" data-page="products">Ver más
+                        Productos</button>
                 </div>
 
                 <div class="features">
@@ -1075,6 +1088,16 @@
     </footer>
 
     <script>
+
+        document.querySelector('.btn-more-products button').addEventListener('click', function () {
+            const productsPage = document.getElementById('products-page');
+            window.scrollTo({
+                top: productsPage.offsetTop,
+                behavior: 'smooth'
+            });
+        });
+
+
         // Data Storage (using localStorage as a temporary database)
         class DataStore {
             constructor() {
@@ -1112,7 +1135,7 @@
                     {
                         id: 3,
                         name: "Leche Fresca",
-                        description: "Leche entera recién ordeñada",
+                        description: "Leche de vaca recién ordeñada",
                         price: 4.50,
                         category: "dairy",
                         stock: 20,
