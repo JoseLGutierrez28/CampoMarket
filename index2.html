@@ -640,8 +640,8 @@
         /* Notification */
         .notification {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: 78px;
+            right: 12px;
             padding: 1rem 1.5rem;
             background-color: var(--primary);
             color: var(--white);
@@ -1089,12 +1089,33 @@
 
     <script>
 
+        // Para TODOS los nav-links con data-page
+        document.querySelectorAll('.nav-link[data-page]').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const pageName = this.getAttribute('data-page');
+                const pageId = pageName + '-page';
+                const targetPage = document.getElementById(pageId);
+
+                if (targetPage) {
+                    window.scrollTo({
+                        top: targetPage.offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Y específicamente para el botón de productos
         document.querySelector('.btn-more-products button').addEventListener('click', function () {
             const productsPage = document.getElementById('products-page');
-            window.scrollTo({
-                top: productsPage.offsetTop,
-                behavior: 'smooth'
-            });
+            if (productsPage) {
+                window.scrollTo({
+                    top: productsPage.offsetTop,
+                    behavior: 'smooth'
+                });
+            }
         });
 
 
