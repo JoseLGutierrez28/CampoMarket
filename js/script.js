@@ -1,3 +1,7 @@
+// Ensure a global uiController object exists for inline onclick handlers in the HTML.
+// This prevents "uiController is not defined" if an inline handler fires before the instance is assigned.
+window.uiController = window.uiController || {};
+
 class DataStore {
     constructor() {
         this.users = JSON.parse(localStorage.getItem('campomarket_users')) || [];
@@ -455,39 +459,106 @@ class UIController {
         document.body.style.overflow = 'auto';
     }
 
+    validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(String(email).toLowerCase());
+    }
+
+    validatePasswordStrength(password) {
+        // Minimum 8 chars, at least one letter and one number (example)
+        return /(?=^.{8,}$)(?=.*\d)(?=.*[A-Za-z]).*/.test(password);
+    }
+
+    sanitizeInput(str) {
+        if (!str) return '';
+        return String(str).replace(/[<>"/'`]/g, '');
+    }
+
     login() {
-        const email = document.getElementById('login-email').value;
+        const email = this.sanitizeInput(document.getElementById('login-email').value);
         const password = document.getElementById('login-password').value;
+
+        if (!this.validateEmail(email)) {
+            this.showNotification('Email inválido', 'error');
+            return;
+        }
 
         const user = this.dataStore.findUserByEmail(email);
 
-        if (user && user.password === password) {
-            this.dataStore.currentUser = user;
-            this.dataStore.saveData();
-            this.showNotification('Inicio de sesión exitoso', 'success');
-            this.showPage('home');
-            this.updateUI();
-            this.closeMobileMenu();
-        } else {
+        if (!user) {
             this.showNotification('Email o contraseña incorrectos', 'error');
+            return;
         }
+
+        // Compare hashed password using bcryptjs (must include bcryptjs in HTML)
+        try {
+            if (typeof bcrypt === 'undefined') {
+                console.warn('bcrypt not found - include bcryptjs for hashing.');
+                // Fallback to plain compare (legacy) but warn
+                if (user.password === password) {
+                    this.dataStore.currentUser = user;
+                    this.dataStore.saveData();
+                    this.showNotification('Inicio de sesión exitoso', 'success');
+                    this.showPage('home');
+                    this.updateUI();
+                    this.closeMobileMenu();
+                    return;
+                }
+            } else {
+                if (bcrypt.compareSync(password, user.password)) {
+                    this.dataStore.currentUser = user;
+                    this.dataStore.saveData();
+                    this.showNotification('Inicio de sesión exitoso', 'success');
+                    this.showPage('home');
+                    this.updateUI();
+                    this.closeMobileMenu();
+                    return;
+                }
+            }
+        } catch (err) {
+            console.error(err);
+        }
+
+        this.showNotification('Email o contraseña incorrectos', 'error');
     }
 
     register() {
-        const name = document.getElementById('register-name').value;
-        const email = document.getElementById('register-email').value;
+        const name = this.sanitizeInput(document.getElementById('register-name').value);
+        const email = this.sanitizeInput(document.getElementById('register-email').value);
         const password = document.getElementById('register-password').value;
-        const type = document.getElementById('register-type').value;
+        const type = this.sanitizeInput(document.getElementById('register-type').value);
+
+        if (!this.validateEmail(email)) {
+            this.showNotification('Email inválido', 'error');
+            return;
+        }
+
+        if (!this.validatePasswordStrength(password)) {
+            this.showNotification('La contraseña debe tener mínimo 8 caracteres y contener letras y números', 'error');
+            return;
+        }
 
         if (this.dataStore.findUserByEmail(email)) {
             this.showNotification('Este email ya está registrado', 'error');
             return;
         }
 
+        // Hash password before storing (requires bcryptjs)
+        let hashed = password;
+        if (typeof bcrypt !== 'undefined') {
+            try {
+                hashed = bcrypt.hashSync(password, 10);
+            } catch (err) {
+                console.error('bcrypt hashing failed', err);
+            }
+        } else {
+            console.warn('bcrypt not found - storing password as plain text (not secure). Include bcryptjs.');
+        }
+
         const user = {
             name: name,
             email: email,
-            password: password,
+            password: hashed,
             type: type
         };
 
